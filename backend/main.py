@@ -20,10 +20,10 @@ NAVER_SECRET = os.getenv("NAVER_CLIENT_SECRET")
 @app.get("/route-test")
 def route_test():
     params = {
-        "SX": 126.9027279,
-        "SY": 37.5349277,
-        "EX": 126.9145430,
-        "EY": 37.5499421,
+        "SX": 127.4330095,
+        "SY": 36.3324875,
+        "EX": 127.3442841,
+        "EY": 36.369606,
         "apiKey": ODSAY_API_KEY
     }
 

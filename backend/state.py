@@ -17,6 +17,10 @@ class AgentState(TypedDict):
     origin_coord: Optional[Dict] = None
     dest_coord: Optional[Dict] = None
 
+    # PrimaryRouteNode 결과
+    primary_route_time_min: Optional[int] = None
+    primary_route_points: Optional[List[Dict]] = None
+
     # 검색된 음식점 후보 리스트
     candidates: Optional[List[Dict]] = None
 
