@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional, List, Dict
+from typing import TypedDict, Optional, List, Dict
 
-class AgentState(BaseModel):
+
+class AgentState(TypedDict):
     # 유저 입력
     user_query: str
 
