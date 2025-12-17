@@ -3,8 +3,8 @@ import requests
 import os
 from urllib.parse import urlencode
 from dotenv import load_dotenv
-from state import AgentState
-from graph import agent
+from .state import AgentState
+from .graph import agent
 
 
 app = FastAPI()

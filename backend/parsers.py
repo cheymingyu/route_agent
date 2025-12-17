@@ -1,5 +1,5 @@
 from langchain_core.output_parsers import PydanticOutputParser
-from schemas import IntentSchema
+from .schemas import IntentSchema
 
 parser = PydanticOutputParser(pydantic_object=IntentSchema)
 

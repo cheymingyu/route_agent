@@ -1,7 +1,7 @@
-from schemas import IntentSchema
-from state import AgentState
-from llm import llm
-from parsers import parser, format_instructions
+from ..schemas import IntentSchema
+from ..state import AgentState
+from ..llm import llm
+from ..parsers import parser, format_instructions
 
 
 def intent_node(state: AgentState):

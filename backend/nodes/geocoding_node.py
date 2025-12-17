@@ -1,5 +1,5 @@
-from state import AgentState
-from apis.naver_map import geocode
+from ..state import AgentState
+from ..apis.naver_map import geocode
 
 def geocoding_node(state: AgentState):
     if state['origin']:

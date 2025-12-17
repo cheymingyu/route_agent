@@ -1,5 +1,5 @@
-from state import AgentState
-from apis.naver_address_search import search_place
+from ..state import AgentState
+from ..apis.naver_address_search import search_place
 
 def place_resolve_node(state: AgentState):
     if state['origin']:
