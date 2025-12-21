@@ -33,7 +33,10 @@ def _extract_route_points(path: dict) -> list[dict]:
 
         # 도보
         if traffic_type == 3:
-            pass
+            route_points.append({
+                    'sectionTime': sub_path['sectionTime'],
+                    'trafficType': traffic_type,
+                })
 
         # 버스 or 지하철
         elif traffic_type in (1, 2):
