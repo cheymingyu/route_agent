@@ -47,6 +47,7 @@ def _extract_route_points(path: dict) -> list[dict]:
                     'y': float(station['y']),
                     'stationID': station.get('stationID'),
                     'stationName': station.get('stationName'),
+                    'trafficType': traffic_type,
                 })
     
 
