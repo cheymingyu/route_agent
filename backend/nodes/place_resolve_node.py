@@ -1,9 +1,9 @@
 from ..state import AgentState
-from ..apis.naver_address_search import search_place
+from ..apis.naver_search import search_address
 
 def place_resolve_node(state: AgentState):
     if state['origin']:
-        place = search_place(state['origin'])
+        place = search_address(state['origin'])
         if place:
             origin_address = place['address']
         else:
@@ -11,7 +11,7 @@ def place_resolve_node(state: AgentState):
     
 
     if state['destination']:
-        place = search_place(state['destination'])
+        place = search_address(state['destination'])
         if place:
             dest_address = place['address']
         else:

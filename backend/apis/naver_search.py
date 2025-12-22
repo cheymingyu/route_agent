@@ -7,7 +7,14 @@ load_dotenv()
 NAVER_ID = os.getenv("NAVER_CLIENT_ID")
 NAVER_SECRET = os.getenv("NAVER_CLIENT_SECRET")
 
-def search_place(query: str):
+def search_address(query: str):
+    '''
+    Docstring for search_address
+    
+    :param query: Description
+    :type query: str
+    특정 장소가 입력되면 그 장소의 주소 반환
+    '''
     url = "https://openapi.naver.com/v1/search/local.json"
     params = {"query": query}
 
