@@ -73,6 +73,8 @@ def search_local_restaurants(
             results.append({
                 # 검색어 강조 표시 제거
                 'name': item.get('title','').replace('<b>','').replace('</b>',''),
+                'x': float(item.get('mapx')) / 1e7,
+                'y': float(item.get('mapy')) / 1e7,
             })
         except (TypeError, ValueError):
             continue
