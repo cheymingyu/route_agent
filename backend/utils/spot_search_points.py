@@ -20,6 +20,7 @@ def extract_transfer_points(
                 'x': point['x'],
                 'y': point['y'],
                 'stationID': point.get('stationID'),
+                'stationName': point.get('stationName'),
                 'spot': 'transfer',
             })
         
@@ -47,6 +48,7 @@ def extract_interval_points(
             'x': point['x'],
             'y': point['y'],
             'stationID': point.get('stationID'),
+            'stationName': point.get('stationName'),
             'spot': 'interval',
         })
 
@@ -60,6 +62,7 @@ def extract_interval_points(
             'x': point['x'],
             'y': point['y'],
             'stationID': point.get('stationID'),
+            'stationName': point.get('stationName'),
             'spot': 'interval',
         })
 
