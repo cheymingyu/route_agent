@@ -39,8 +39,7 @@ def search_local_restaurants(
     size: int = 5,
 ) -> List[Dict]:
     '''
-    네이버 Local Search API를 사용해
-    특정 좌표 주변의 음식점 검색
+    네이버 Local Search API를 사용해 주변의 음식점 검색
     '''
 
     url = 'https://openapi.naver.com/v1/search/local.json'
