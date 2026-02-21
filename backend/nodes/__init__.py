@@ -4,6 +4,7 @@ from .geocoding_node import geocoding_node
 from .primary_route_node import primary_route_node
 from .restaurant_search_node import restaurant_search_node
 from .scoring_node import scoring_node
+from .final_response_node import final_response_node
 
 __all__ = [
     "intent_node",
@@ -12,4 +13,5 @@ __all__ = [
     "primary_route_node",
     "restaurant_search_node",
     "scoring_node",
+    "final_response_node",
 ]
