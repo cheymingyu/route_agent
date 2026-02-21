@@ -23,15 +23,18 @@ def _euclidean_distance_m(p1: Dict, p2: Dict) -> float:
     return sqrt(dx * dx + dy * dy)
 
 
-def _min_distance_to_route(candidate: Dict, route_points: List[Dict]) -> float:
+def _min_distance_to_route(candidate: Dict, route_points: List[Dict]) -> Tuple[float, Optional[Dict]]:
     min_distance = float("inf")
+    nearest_station: Optional[Dict] = None
+
     for point in route_points:
         if point.get("x") is None or point.get("y") is None:
             continue
         d = _euclidean_distance_m(candidate, point)
         if d < min_distance:
             min_distance = d
-    return min_distance
+            nearest_station = point
+    return min_distance, nearest_station
 
 
 def _distance_score(distance_m: float) -> float:
@@ -72,7 +75,7 @@ def _score_candidate(
     restaurant_type: Optional[str],
     walk_limit_min: Optional[int],
 ) -> Dict:
-    distance_m = _min_distance_to_route(candidate, route_points)
+    distance_m, nearest_station = _min_distance_to_route(candidate, route_points)
     distance_score = _distance_score(distance_m)
     type_score = _type_score(candidate.get("name", ""), restaurant_type)
 
@@ -86,6 +89,13 @@ def _score_candidate(
     scored.update(
         {
             "distance_m": round(distance_m, 1) if distance_m != float("inf") else None,
+            "nearest_station_name": (nearest_station or {}).get("stationName"),
+            "nearest_station_id": (nearest_station or {}).get("stationID"),
+            "nearest_station_coord": {
+                "x": (nearest_station or {}).get("x"),
+                "y": (nearest_station or {}).get("y"),
+            } if nearest_station else None,
+            "nearest_station_distance_m": round(distance_m, 1) if distance_m != float("inf") else None,
             "estimated_walk_min": walk_min,
             "distance_score": round(distance_score, 2),
             "type_score": round(type_score, 2),
@@ -100,10 +110,13 @@ def _build_reason(best: Dict, restaurant_type: Optional[str]) -> str:
     name = best.get("name", "알 수 없는 식당")
     distance = best.get("distance_m")
     walk_min = best.get("estimated_walk_min")
+    nearest_station_name = best.get("nearest_station_name")
 
     reason_parts = [f"{name}가 경로에서 가장 접근성이 좋았습니다"]
     if distance is not None:
         reason_parts.append(f"(최소 거리 약 {distance}m)")
+    if nearest_station_name:
+        reason_parts.append(f"{nearest_station_name} 기준")
     if walk_min is not None:
         reason_parts.append(f"도보 약 {walk_min}분")
     if restaurant_type:
@@ -138,6 +151,10 @@ def scoring_node(state: AgentState) -> Dict:
             scored.update(
                 {
                     "distance_m": None,
+                    "nearest_station_name": None,
+                    "nearest_station_id": None,
+                    "nearest_station_coord": None,
+                    "nearest_station_distance_m": None,
                     "estimated_walk_min": None,
                     "distance_score": 0.0,
                     "type_score": round(t_score, 2),
