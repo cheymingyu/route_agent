@@ -6,6 +6,7 @@ from .nodes import (
     geocoding_node,
     primary_route_node,
     restaurant_search_node,
+    scoring_node,
 )
 
 
@@ -17,6 +18,7 @@ graph.add_node('place_resolve', place_resolve_node)
 graph.add_node('geocoding', geocoding_node)
 graph.add_node('primary_route', primary_route_node)
 graph.add_node('restaurant_search', restaurant_search_node)
+graph.add_node('scoring', scoring_node)
 
 
 # 엣지 추가
@@ -24,6 +26,7 @@ graph.add_edge('intent', 'place_resolve')
 graph.add_edge('place_resolve', 'geocoding')
 graph.add_edge('geocoding', 'primary_route')
 graph.add_edge('primary_route', 'restaurant_search')
+graph.add_edge('restaurant_search', 'scoring')
 
 
 # 진입 지점 설정
