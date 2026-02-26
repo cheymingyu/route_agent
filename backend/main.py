@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
 from uuid import uuid4
@@ -10,6 +11,17 @@ from .graph import agent, feedback_agent
 
 app = FastAPI()
 SESSION_STORE: dict[str, AgentState] = {}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 load_dotenv()
 ODSAY_API_KEY = os.getenv("ODSAY_API_KEY")  # .env에 넣어둬도 됨
