@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: route-agent-app
+    env_file:
+      - backend/.env
+    ports:
+      - "18080:8000"
