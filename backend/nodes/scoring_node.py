@@ -106,44 +106,26 @@ def _score_candidate(
     return scored
 
 
-def _build_reason(best: Dict, restaurant_type: Optional[str]) -> str:
-    name = best.get("name", "알 수 없는 식당")
-    distance = best.get("distance_m")
-    walk_min = best.get("estimated_walk_min")
-    nearest_station_name = best.get("nearest_station_name")
-
-    reason_parts = [f"{name}가 경로에서 가장 접근성이 좋았습니다"]
-    if distance is not None:
-        reason_parts.append(f"(최소 거리 약 {distance}m)")
-    if nearest_station_name:
-        reason_parts.append(f"{nearest_station_name} 기준")
-    if walk_min is not None:
-        reason_parts.append(f"도보 약 {walk_min}분")
-    if restaurant_type:
-        reason_parts.append(f"요청한 '{restaurant_type}' 조건을 우선 반영했습니다")
-
-    return ", ".join(reason_parts) + "."
-
-
 def scoring_node(state: AgentState) -> Dict:
     """
-    후보 음식점 점수 계산 후 최종 추천 1개를 선택합니다.
+    후보 음식점을 점수 계산 후 정렬만 수행합니다.
 
     반환:
-    - route_details: 점수 포함 후보 리스트(내림차순)
-    - selected_restaurant: 최고점 후보 1개
+    - candidates: 점수 포함 후보 리스트(내림차순)
+    - route_details: 점수 포함 후보 리스트(디버깅/로깅용)
+    - candidate_cursor: 첫 추천 인덱스(0)
     """
     candidates = state.get("candidates") or []
     route_points = state.get("primary_route_points") or []
 
     if not candidates:
         return {
+            "candidates": [],
             "route_details": [],
-            "selected_restaurant": None,
+            "candidate_cursor": 0,
         }
 
     if not route_points:
-        # 경로 포인트가 없으면 타입 점수 기반으로만 선택
         fallback_scored = []
         for c in candidates:
             t_score = _type_score(c.get("name", ""), state.get("restaurant_type"))
@@ -165,12 +147,10 @@ def scoring_node(state: AgentState) -> Dict:
             fallback_scored.append(scored)
 
         fallback_scored.sort(key=lambda x: x["total_score"], reverse=True)
-        best = fallback_scored[0]
-        best["score_reason"] = _build_reason(best, state.get("restaurant_type"))
-
         return {
+            "candidates": fallback_scored,
             "route_details": fallback_scored,
-            "selected_restaurant": best,
+            "candidate_cursor": 0,
         }
 
     scored_candidates: List[Dict] = []
@@ -185,10 +165,9 @@ def scoring_node(state: AgentState) -> Dict:
         )
 
     scored_candidates.sort(key=lambda x: x["total_score"], reverse=True)
-    best_candidate = scored_candidates[0]
-    best_candidate["score_reason"] = _build_reason(best_candidate, state.get("restaurant_type"))
 
     return {
+        "candidates": scored_candidates,
         "route_details": scored_candidates,
-        "selected_restaurant": best_candidate,
+        "candidate_cursor": 0,
     }

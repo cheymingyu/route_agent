@@ -1,13 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import requests
 import os
+from uuid import uuid4
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 from .state import AgentState
-from .graph import agent
+from .graph import agent, feedback_agent
 
 
 app = FastAPI()
+SESSION_STORE: dict[str, AgentState] = {}
 
 load_dotenv()
 ODSAY_API_KEY = os.getenv("ODSAY_API_KEY")  # .env에 넣어둬도 됨
@@ -78,3 +80,56 @@ def run_agent(payload: dict):
     result: AgentState = agent.invoke(init_state)
 
     return result
+
+
+@app.post("/chat/start")
+def chat_start(payload: dict):
+    user_input = payload.get("text")
+    if not user_input:
+        raise HTTPException(status_code=400, detail="text는 필수입니다.")
+
+    session_id = str(uuid4())
+    init_state = AgentState(
+        user_query=user_input,
+        session_id=session_id,
+        last_user_action="restart",
+        rejected_candidate_ids=[],
+        candidate_cursor=0,
+    )
+
+    result: AgentState = agent.invoke(init_state)
+    SESSION_STORE[session_id] = result
+
+    return {
+        "session_id": session_id,
+        "final_output": result.get("final_output"),
+        "selected_restaurant": result.get("selected_restaurant"),
+        "remaining_candidates": result.get("remaining_candidates"),
+    }
+
+
+@app.post("/chat/next")
+def chat_next(payload: dict):
+    session_id = payload.get("session_id")
+    if not session_id:
+        raise HTTPException(status_code=400, detail="session_id는 필수입니다.")
+
+    prev_state = SESSION_STORE.get(session_id)
+    if not prev_state:
+        raise HTTPException(status_code=404, detail="세션이 만료되었거나 존재하지 않습니다.")
+
+    next_input = dict(prev_state)
+    next_input["last_user_action"] = "next"
+    next_input["session_id"] = session_id
+
+    result: AgentState = feedback_agent.invoke(next_input)
+    SESSION_STORE[session_id] = result
+
+    exhausted = result.get("selected_restaurant") is None
+    return {
+        "session_id": session_id,
+        "exhausted": exhausted,
+        "final_output": result.get("final_output"),
+        "selected_restaurant": result.get("selected_restaurant"),
+        "remaining_candidates": result.get("remaining_candidates"),
+    }

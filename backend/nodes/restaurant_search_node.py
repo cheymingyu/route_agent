@@ -23,6 +23,13 @@ def restaurant_search_node(state: AgentState) -> dict:
     사용자에게 추천할 음식점 후보 리스트를 반환
     '''
 
+    # 이미 후보가 있으면 재검색하지 않음
+    existing = state.get('candidates') or []
+    if existing:
+        return {
+            'candidates': existing,
+        }
+
     if not state['primary_route_points']:
         raise ValueError('primary_route_points가 없습니다.')
     
