@@ -2,6 +2,7 @@ from typing import Dict, List, Set, Tuple
 
 from backend.state import AgentState
 from backend.apis.naver_search import search_local_restaurants
+from backend.apis.naver_map import reverse_geocode
 from backend.utils.spot_search_points import build_restaurant_search_spots
 
 
@@ -15,6 +16,28 @@ def _restaurant_key(item: Dict) -> Tuple:
         round(item.get('x', 0), 6),
         round(item.get('y', 0), 6)
     )
+
+
+def _build_query_with_region(spot: Dict, restaurant_type: str) -> str:
+    station_name = spot.get('stationName')
+    if not station_name:
+        return ""
+
+    query_prefix = ""
+    x = spot.get("x")
+    y = spot.get("y")
+
+    if x is not None and y is not None:
+        try:
+            region = reverse_geocode(float(x), float(y))
+            if region:
+                query_prefix = region.get("area2") or region.get("area1") or ""
+        except Exception:
+            query_prefix = ""
+
+    if query_prefix:
+        return f"{query_prefix} {station_name} 주변 {restaurant_type}"
+    return f"{station_name} 주변 {restaurant_type}"
 
 
 def restaurant_search_node(state: AgentState) -> dict:
@@ -50,7 +73,12 @@ def restaurant_search_node(state: AgentState) -> dict:
         if not station_name:
             continue
 
-        query = f"{station_name} 주변 {state['restaurant_type'] or '음식점'}"
+        query = _build_query_with_region(
+            spot=spot,
+            restaurant_type=state['restaurant_type'] or '음식점',
+        )
+        if not query:
+            continue
 
         results = search_local_restaurants(
             query=query,
