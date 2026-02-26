@@ -13,3 +13,4 @@ wheels/
 
 backend/.env
 backend/__pycache__/
+*.json
