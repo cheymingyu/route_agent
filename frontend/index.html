@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Route Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <p class="eyebrow">Route Agent</p>
+        <h1>경로 기반 식당 추천</h1>
+        <p class="sub">LLM 응답 유지 + 다른 후보 재추천 루프 테스트</p>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>API Base URL</span>
+            <input id="apiBase" type="text" value="http://localhost:18080" />
+          </label>
+          <label class="field">
+            <span>질문</span>
+            <textarea id="query" rows="3">대전역에서 충남대 가는데 돈까스 먹고 싶어. 도보 5분 이하로 알려줘.</textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="startBtn" class="btn primary">추천 시작</button>
+          <button id="nextBtn" class="btn ghost" disabled>다른 후보 보기</button>
+        </div>
+
+        <p id="status" class="status">대기 중</p>
+      </section>
+
+      <section class="panel result">
+        <h2>응답</h2>
+        <article id="output" class="card muted">아직 응답이 없습니다.</article>
+
+        <h3>선택된 식당</h3>
+        <dl class="meta" id="meta">
+          <div><dt>이름</dt><dd>-</dd></div>
+          <div><dt>정거장</dt><dd>-</dd></div>
+          <div><dt>도보(분)</dt><dd>-</dd></div>
+          <div><dt>좌표</dt><dd>-</dd></div>
+          <div><dt>session_id</dt><dd class="mono">-</dd></div>
+        </dl>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
