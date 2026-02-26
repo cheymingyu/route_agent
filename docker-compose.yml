@@ -4,7 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: route-agent-app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - backend/.env
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
     ports:
       - "18080:8000"
