@@ -30,7 +30,7 @@ If you want another model, update `OLLAMA_MODEL` in `.env` and pull that model.
 ```bash
 curl -X POST http://localhost:8000/agent-test \
   -H "Content-Type: application/json" \
-  -d '{"text":"서울역에서 강남역 가는 길에 한식집 추천해줘"}'
+  -d '{"text":"대전역에서 충남대 가는데 돈까스 먹고 싶어. 도보 5분 이하로 알려줘."}'
 ```
 
 ### 5) Logs / stop
